@@ -1,0 +1,7 @@
+{
+  "source_url": "https://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip",
+  "retrieved_at": "2026-10-23T15:03:37.046562+00:00",
+  "sha256": "b1ff0e3071c46cdc1c99e0015878b98a01851462d7e447237ce2fc1294ccf303",
+  "bytes": 21802629,
+  "source": "FuelEconomy.gov EPA published vehicle test ratings"
+}

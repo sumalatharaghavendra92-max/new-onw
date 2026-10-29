@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  GoGreen design tokens.
+  Identity: Indian national-highway signage. One accent (sign green), one
+  signal colour used sparingly (milestone amber), green-tinted neutrals,
+  a condensed display face like road signs, monospace for every number.
+*/
+:root {
+  --gg-sign: #1b6a45;        /* the only accent: buttons, active states, routes */
+  --gg-sign-hover: #14553a;
+  --gg-sign-deep: #0f3527;   /* sidebar and sign panels */
+  --gg-sign-tint: #e3efe8;   /* selected rows, soft highlights */
+  --gg-amber: #e0a32e;       /* milestone yellow: depot pins, warnings, step markers */
+  --gg-amber-tint: #fbf1d9;
+  --gg-risk: #b42318;
+  --gg-risk-tint: #fdecea;
+
+  --gg-paper: #f3f5f2;       /* page background */
+  --gg-surface: #ffffff;
+  --gg-ink: #15201b;
+  --gg-muted: #5a6862;
+  --gg-faint: #8a9690;
+  --gg-line: #dbe2dd;
+  --gg-line-strong: #b9c4bd;
+
+  --gg-radius-lg: 14px;      /* containers */
+  --gg-radius-md: 10px;      /* inputs, buttons */
+  --gg-radius-sm: 6px;       /* chips, inner elements */
+
+  /* Shadows tinted with the sign green instead of black. */
+  --gg-shadow-sm: 0 1px 2px rgb(15 53 39 / 0.06);
+  --gg-shadow-md: 0 1px 2px rgb(15 53 39 / 0.05), 0 10px 28px -14px rgb(15 53 39 / 0.22);
+
+  --gg-font-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --gg-font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --gg-font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+@layer base {
+  body {
+    background: var(--gg-paper);
+    color: var(--gg-ink);
+    font-family: var(--gg-font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+  :focus-visible { outline: 2px solid var(--gg-sign); outline-offset: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

@@ -1,0 +1,85 @@
+{
+  "benchmark": "EPA vehicle efficiency ratings; NOT deployed route-model accuracy",
+  "generated_at": "2026-10-23T15:07:03.761122+00:00",
+  "target": "Published combined fuel economy converted to L/100 km",
+  "features": [
+    "year",
+    "displ",
+    "cylinders",
+    "drive",
+    "trany",
+    "VClass",
+    "fuelType1",
+    "atvType"
+  ],
+  "train_rows": 24593,
+  "test_rows": 2097,
+  "train_years": [
+    2000,
+    2022
+  ],
+  "test_years": [
+    2023,
+    2024
+  ],
+  "split": "Fixed model-year holdout; preprocessing fitted only on training records",
+  "test_model_families_also_in_train": 761,
+  "random_forest": {
+    "mae_l_per_100km": 0.5195,
+    "rmse_l_per_100km": 0.8069,
+    "bias_predicted_minus_actual_l_per_100km": -0.0676,
+    "r2": 0.9125
+  },
+  "train_median_baseline": {
+    "mae_l_per_100km": 2.1763,
+    "rmse_l_per_100km": 2.7458,
+    "bias_predicted_minus_actual_l_per_100km": 0.3198,
+    "r2": -0.0138
+  },
+  "fuel_slices": {
+    "Diesel": {
+      "count": 42,
+      "mae_l_per_100km": 0.2524,
+      "rmse_l_per_100km": 0.4307,
+      "bias_predicted_minus_actual_l_per_100km": -0.0574,
+      "r2": 0.5176
+    },
+    "Midgrade Gasoline": {
+      "count": 22,
+      "mae_l_per_100km": 0.2727,
+      "rmse_l_per_100km": 0.3944,
+      "bias_predicted_minus_actual_l_per_100km": 0.1575,
+      "r2": 0.7376
+    },
+    "Premium Gasoline": {
+      "count": 1121,
+      "mae_l_per_100km": 0.5937,
+      "rmse_l_per_100km": 0.9095,
+      "bias_predicted_minus_actual_l_per_100km": -0.12,
+      "r2": 0.881
+    },
+    "Regular Gasoline": {
+      "count": 912,
+      "mae_l_per_100km": 0.4467,
+      "rmse_l_per_100km": 0.6842,
+      "bias_predicted_minus_actual_l_per_100km": -0.009,
+      "r2": 0.9303
+    }
+  },
+  "deployment_eligible": false,
+  "limitations": [
+    "US published test-cycle ratings, not real-time trip fuel measurements",
+    "No route, cargo, traffic, elevation, driver or Indian fleet validation",
+    "Model families may recur across years; not an unseen-family holdout",
+    "Single fixed split; no uncertainty interval or independent replication",
+    "Experimental model is not saved or installed into routing"
+  ],
+  "dataset_sha256": "b1ff0e3071c46cdc1c99e0015878b98a01851462d7e447237ce2fc1294ccf303",
+  "provenance": {
+    "source_url": "https://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip",
+    "retrieved_at": "2026-10-23T15:03:37.046562+00:00",
+    "sha256": "b1ff0e3071c46cdc1c99e0015878b98a01851462d7e447237ce2fc1294ccf303",
+    "bytes": 21802629,
+    "source": "FuelEconomy.gov EPA published vehicle test ratings"
+  }
+}

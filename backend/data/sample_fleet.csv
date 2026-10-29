@@ -1,0 +1,26 @@
+vehicle_no,type,fuel_type,load_capacity_kg,emission_factor_g_per_km,status,fuel_percent,load_kg,odometer_km
+SAMPLE-001,van,Diesel,1400,215,active,22,168,6400
+SAMPLE-002,van,Electric,870,0,active,39,131,13823
+SAMPLE-003,truck,CNG,5040,412,active,56,917,21246
+SAMPLE-004,car,Petrol,310,138,active,73,66,28669
+SAMPLE-005,heavy truck,Diesel,18080,894,active,90,4412,36092
+SAMPLE-006,van,Diesel,1500,220,active,30,413,43515
+SAMPLE-007,van,Electric,970,0,active,47,297,50938
+SAMPLE-008,truck,CNG,5140,417,active,64,1732,58361
+SAMPLE-009,car,Petrol,410,143,maintenance,81,0,65784
+SAMPLE-010,heavy truck,Diesel,18180,899,active,98,7254,73207
+SAMPLE-011,van,Diesel,1600,225,active,38,688,80630
+SAMPLE-012,van,Electric,1070,0,active,55,493,88053
+SAMPLE-013,truck,CNG,5240,422,active,72,2578,95476
+SAMPLE-014,car,Petrol,510,148,active,89,267,102899
+SAMPLE-015,heavy truck,Diesel,18280,904,active,29,10127,110322
+SAMPLE-016,van,Diesel,1700,230,active,46,994,117745
+SAMPLE-017,van,Electric,1170,0,active,63,721,125168
+SAMPLE-018,truck,CNG,5340,427,active,80,3455,132591
+SAMPLE-019,car,Petrol,610,153,active,97,414,140014
+SAMPLE-020,heavy truck,Diesel,18380,909,maintenance,37,0,147437
+SAMPLE-021,van,Diesel,1800,235,active,54,1332,154860
+SAMPLE-022,van,Electric,1270,0,active,71,979,162283
+SAMPLE-023,truck,CNG,5440,432,active,88,4363,169706
+SAMPLE-024,car,Petrol,710,158,active,28,591,177129
+SAMPLE-025,heavy truck,Diesel,18480,914,active,45,15967,184552

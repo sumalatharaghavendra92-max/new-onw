@@ -1,0 +1,13 @@
+.env
+**/.env
+!**/.env.example
+node_modules/
+frontend/dist/
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+backend/instance/
+backend/public_data/vehicles.csv
+.DS_Store
+.playwright-mcp/

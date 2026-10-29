@@ -1,0 +1,999 @@
+/*
+  GoGreen operations UI.
+  Every colour, radius and font comes from the tokens in src/index.css.
+  Identity: highway signage. Sign green is the only accent; milestone amber
+  marks depots, destinations and warnings; every number is set in IBM Plex Mono.
+*/
+
+/* CO₂ breakdown colours: distinct but muted so the bars sit with the palette. */
+:root {
+  --gg-roll: #3f7d5c;
+  --gg-aero: #6c9cc0;
+  --gg-grade: #c6913a;
+  --gg-stops: #b5624e;
+  --gg-aux: #8b82b5;
+}
+
+/* ── Page frame ─────────────────────────────────────────────────────────── */
+
+.op-page {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  color: var(--gg-ink);
+  font-family: var(--gg-font-body);
+}
+
+.op-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--gg-line);
+}
+
+.op-eyebrow {
+  font: 500 11px/1 var(--gg-font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gg-faint);
+  margin-bottom: 10px;
+}
+
+.op-header h1 {
+  font-family: var(--gg-font-display);
+  font-size: clamp(34px, 3.4vw, 46px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.005em;
+}
+
+.op-description {
+  color: var(--gg-muted);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 10px;
+  max-width: 68ch;
+}
+
+.op-muted { color: var(--gg-muted); }
+
+.op-note {
+  font-size: 12.5px;
+  color: var(--gg-muted);
+  line-height: 1.6;
+}
+
+/* Every number, unit, ID, plate and timestamp. */
+.op-num {
+  font-family: var(--gg-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.op-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--gg-line);
+  padding-top: 16px;
+  font: 400 11.5px/1.6 var(--gg-font-mono);
+  color: var(--gg-faint);
+}
+
+/* ── Buttons and links ──────────────────────────────────────────────────── */
+
+.op-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--gg-radius-md);
+  background: var(--gg-sign);
+  color: #fff;
+  font: 600 13.5px/1.2 var(--gg-font-body);
+  cursor: pointer;
+  transition: background-color 0.18s, border-color 0.18s, transform 0.1s;
+}
+.op-button:hover { background: var(--gg-sign-hover); }
+.op-button:active { transform: translateY(1px); }
+.op-button.secondary {
+  background: var(--gg-surface);
+  color: var(--gg-ink);
+  border-color: var(--gg-line-strong);
+}
+.op-button.secondary:hover { border-color: var(--gg-sign); color: var(--gg-sign); }
+.op-button.danger {
+  background: transparent;
+  color: var(--gg-risk);
+  border-color: transparent;
+}
+.op-button.danger:hover { background: var(--gg-risk-tint); }
+.op-button:disabled { opacity: 0.5; cursor: wait; transform: none; }
+
+.op-button:focus-visible,
+.op-route-card:focus-visible,
+.op-fleet-card:focus-visible,
+.op-input:focus-visible,
+.op-icon-button:focus-visible,
+.op-small-link:focus-visible,
+.op-action-row:focus-visible {
+  outline: 2px solid var(--gg-sign);
+  outline-offset: 2px;
+}
+
+.op-small-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--gg-sign);
+  font-size: 13px;
+  font-weight: 600;
+}
+.op-small-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.op-icon-button {
+  color: var(--gg-muted);
+  padding: 6px;
+  border-radius: var(--gg-radius-sm);
+}
+.op-icon-button:hover { color: var(--gg-sign); background: var(--gg-sign-tint); }
+
+/* ── Panels ─────────────────────────────────────────────────────────────── */
+
+/* Primary containers get the surface and a green-tinted shadow, no border. */
+.op-panel {
+  background: var(--gg-surface);
+  border-radius: var(--gg-radius-lg);
+  box-shadow: var(--gg-shadow-md);
+  padding: 24px;
+  min-width: 0;
+}
+
+.op-panel h2 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.op-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.op-panel-heading p {
+  font-size: 12.5px;
+  color: var(--gg-muted);
+  margin-top: 4px;
+}
+
+.op-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.op-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.op-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── Metrics: one strip with dividers, not a row of identical cards ─────── */
+
+.op-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--gg-surface);
+  border-radius: var(--gg-radius-lg);
+  box-shadow: var(--gg-shadow-md);
+  overflow: hidden;
+}
+
+.op-metric {
+  padding: 20px 22px;
+  min-width: 0;
+  border-left: 1px solid var(--gg-line);
+}
+.op-metric:first-child { border-left: 0; }
+
+/* The one figure that matters most on the page. */
+.op-metric.lead {
+  background: var(--gg-sign-deep);
+  color: #fff;
+}
+.op-metric.lead .op-metric-top,
+.op-metric.lead p { color: rgb(255 255 255 / 0.68); }
+.op-metric.lead .op-metric-top svg { color: var(--gg-amber); }
+.op-metric.lead .op-value small { color: rgb(255 255 255 / 0.6); }
+
+.op-metric-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--gg-muted);
+}
+.op-metric-top svg { color: var(--gg-faint); flex-shrink: 0; }
+
+.op-value {
+  font: 600 30px/1.1 var(--gg-font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  margin: 12px 0 6px;
+  overflow-wrap: anywhere;
+}
+.op-value small {
+  font: 500 13px var(--gg-font-mono);
+  letter-spacing: 0;
+  color: var(--gg-muted);
+  margin-left: 6px;
+}
+
+.op-metric p {
+  font-size: 12px;
+  color: var(--gg-faint);
+  line-height: 1.5;
+}
+
+/* ── Status and live indicators ─────────────────────────────────────────── */
+
+.op-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font: 500 11.5px var(--gg-font-mono);
+  color: var(--gg-sign);
+}
+.op-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gg-sign);
+  animation: op-pulse 2.4s infinite;
+}
+.op-live.stale { color: #9a6a12; }
+.op-live.stale i { background: var(--gg-amber); animation: none; }
+
+@keyframes op-pulse {
+  0% { box-shadow: 0 0 0 0 rgb(27 106 69 / 0.35); }
+  70% { box-shadow: 0 0 0 7px rgb(27 106 69 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(27 106 69 / 0); }
+}
+
+/* Small square chips, like the plates on a signboard. */
+.op-status,
+.op-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font: 600 10.5px/1.4 var(--gg-font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--gg-paper);
+  color: var(--gg-muted);
+  border: 1px solid var(--gg-line);
+}
+.op-status.in_progress,
+.op-badge { background: var(--gg-sign-tint); color: var(--gg-sign); border-color: transparent; }
+.op-status.planned,
+.op-badge.warn { background: var(--gg-amber-tint); color: #8a5a0e; border-color: transparent; }
+.op-status.cancelled { background: var(--gg-risk-tint); color: var(--gg-risk); border-color: transparent; }
+
+/* ── Feedback states ────────────────────────────────────────────────────── */
+
+.op-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 36px 12px;
+  text-align: center;
+  color: var(--gg-faint);
+}
+.op-empty h3 { font-size: 15px; font-weight: 600; color: var(--gg-ink); }
+.op-empty p { font-size: 13px; color: var(--gg-muted); max-width: 46ch; line-height: 1.6; }
+
+.op-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--gg-radius-md);
+  background: var(--gg-risk-tint);
+  color: var(--gg-risk);
+  font-size: 13.5px;
+}
+
+.op-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 56px;
+  color: var(--gg-muted);
+  font-size: 13.5px;
+}
+
+/* ── Weekly chart ───────────────────────────────────────────────────────── */
+
+.op-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  height: 184px;
+}
+
+.op-bar-col {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font: 500 12px var(--gg-font-mono);
+  color: var(--gg-ink);
+}
+.op-bar-col small { font: 400 11px var(--gg-font-mono); color: var(--gg-faint); }
+
+.op-bar-track {
+  width: 100%;
+  max-width: 44px;
+  height: 132px;
+  display: flex;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--gg-line-strong);
+  background: repeating-linear-gradient(to top, var(--gg-line) 0 1px, transparent 1px 33px);
+}
+
+.op-bar {
+  width: 100%;
+  min-height: 2px;
+  background: var(--gg-sign);
+  border-radius: 3px 3px 0 0;
+  transition: height 0.5s ease;
+}
+
+/* ── Lists ──────────────────────────────────────────────────────────────── */
+
+.op-route-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--gg-sign-tint);
+  color: var(--gg-sign);
+}
+
+.op-action-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gg-line);
+  font-size: 13.5px;
+}
+.op-action-row:last-child { border-bottom: 0; }
+.op-action-row strong { display: block; font-weight: 600; }
+.op-action-row p { color: var(--gg-muted); font-size: 12.5px; margin-top: 3px; }
+.op-action-row > svg:last-child { margin-left: auto; color: var(--gg-faint); }
+.op-action-row:hover > svg:last-child { color: var(--gg-sign); }
+
+.op-trip-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gg-line);
+  font-size: 14px;
+}
+.op-trip-row:last-child { border-bottom: 0; }
+.op-trip-main { flex: 1; min-width: 0; }
+.op-trip-main strong { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.op-trip-row p {
+  font: 400 11.5px var(--gg-font-mono);
+  color: var(--gg-faint);
+  margin-top: 4px;
+}
+.op-trip-detail { text-align: right; }
+.op-trip-detail strong { font: 500 13.5px var(--gg-font-mono); font-variant-numeric: tabular-nums; }
+
+/* ── Forms ──────────────────────────────────────────────────────────────── */
+
+.op-form { display: flex; flex-direction: column; gap: 16px; }
+.op-form label { font-size: 12.5px; font-weight: 600; color: var(--gg-ink); }
+.op-form .op-note { font-weight: 400; margin-top: 6px; }
+
+.op-input {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--gg-line-strong);
+  border-radius: var(--gg-radius-md);
+  background: var(--gg-surface);
+  color: var(--gg-ink);
+  font-size: 14px;
+  transition: border-color 0.15s;
+}
+.op-input:hover { border-color: var(--gg-faint); }
+.op-input:focus { border-color: var(--gg-sign); outline: none; box-shadow: 0 0 0 3px rgb(27 106 69 / 0.15); }
+input.op-input[type='number'],
+input.op-input[inputmode='decimal'] { font-family: var(--gg-font-mono); }
+
+/* ── Planner layouts and map ────────────────────────────────────────────── */
+
+.op-planner {
+  display: grid;
+  grid-template-columns: minmax(300px, 390px) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.op-map {
+  position: relative;
+  height: 540px;
+  border-radius: var(--gg-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--gg-shadow-md);
+  background: #e8ece6;
+}
+
+/* Route option cards: the selected one gets the sign-green edge. */
+.op-route-card {
+  width: 100%;
+  text-align: left;
+  padding: 18px 20px;
+  border: 1px solid var(--gg-line);
+  border-radius: var(--gg-radius-lg);
+  background: var(--gg-surface);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.op-route-card:hover { border-color: var(--gg-line-strong); }
+.op-route-card.selected {
+  border-color: var(--gg-sign);
+  box-shadow: inset 4px 0 0 var(--gg-sign), var(--gg-shadow-sm);
+}
+.op-route-card strong { font-size: 14px; font-weight: 600; }
+
+.op-route-values {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0 12px;
+}
+.op-route-values b {
+  display: block;
+  font: 600 20px/1.2 var(--gg-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.op-route-values span { font-size: 11.5px; color: var(--gg-faint); }
+
+.op-fleet-grid {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 20px;
+}
+
+.op-fleet-card {
+  width: 100%;
+  text-align: left;
+  padding: 16px 18px;
+  border: 1px solid var(--gg-line);
+  border-radius: var(--gg-radius-lg);
+  background: var(--gg-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.op-fleet-card.selected { border-color: var(--gg-sign); box-shadow: inset 4px 0 0 var(--gg-sign); }
+.op-fleet-card strong { font-size: 14px; font-weight: 600; }
+.op-fleet-card p { font-size: 12.5px; color: var(--gg-muted); }
+.op-fleet-card p.op-num { font-size: 12px; color: var(--gg-faint); }
+
+/* ── Map markers (Leaflet divIcons) ─────────────────────────────────────── */
+
+/* Leaflet adds a white square behind divIcons by default; remove it. */
+.leaflet-marker-icon.leaflet-div-icon { background: transparent; border: 0; }
+
+/* Numbered round stop: deep-green squircle with a mono number.
+   Doubled class beats leaflet.css, which sets markers to display: block. */
+.leaflet-marker-icon.op-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gg-sign-deep);
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 9px;
+  font: 600 12px/1 var(--gg-font-mono);
+  box-shadow: 0 2px 6px rgb(15 53 39 / 0.35);
+}
+.leaflet-marker-icon.op-pin.depot { background: var(--gg-amber); color: var(--gg-sign-deep); }
+
+/* Trip origin: sign-green disc with a white ring. */
+.gg-origin {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--gg-sign);
+  border: 3px solid #fff;
+  box-shadow: 0 1px 5px rgb(15 53 39 / 0.45);
+}
+
+/* Trip destination: a milestone (rounded top, amber band, white body). */
+.gg-milestone {
+  width: 22px;
+  height: 28px;
+  border-radius: 11px 11px 3px 3px;
+  background: linear-gradient(var(--gg-amber) 0 45%, #fff 45%);
+  border: 2px solid var(--gg-sign-deep);
+  box-shadow: 0 2px 6px rgb(15 53 39 / 0.4);
+}
+
+/* Last known vehicle position: green dot with a soft pulse. */
+.gg-vehicle {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--gg-sign);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 0 rgb(27 106 69 / 0.45);
+  animation: gg-vehicle-pulse 2s infinite;
+}
+@keyframes gg-vehicle-pulse {
+  0% { box-shadow: 0 0 0 0 rgb(27 106 69 / 0.45); }
+  70% { box-shadow: 0 0 0 14px rgb(27 106 69 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(27 106 69 / 0); }
+}
+
+.leaflet-container { font-family: var(--gg-font-body); }
+/* Calmer basemap: lower saturation only, so roads and labels stay crisp. */
+.leaflet-tile-pane { filter: saturate(0.6) contrast(1.03); }
+.leaflet-popup-content { font-size: 13px; }
+
+/* ── Model views: CO₂ breakdown, tables, round planner ──────────────────── */
+
+.op-breakdown {
+  display: flex;
+  height: 10px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--gg-paper);
+  gap: 1px;
+}
+.op-breakdown span { height: 100%; }
+
+.op-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 12px;
+  color: var(--gg-muted);
+  margin-top: 8px;
+}
+.op-legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+
+.op-table-wrap { overflow-x: auto; }
+
+.op-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.op-table th {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--gg-line-strong);
+  font: 500 10.5px var(--gg-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gg-faint);
+  white-space: nowrap;
+}
+.op-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--gg-line);
+  vertical-align: top;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.op-table tr:last-child td { border-bottom: 0; }
+
+.op-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.op-equation {
+  font: 500 13px/1.8 var(--gg-font-mono);
+  background: var(--gg-paper);
+  border-left: 3px solid var(--gg-sign);
+  border-radius: 0 var(--gg-radius-md) var(--gg-radius-md) 0;
+  padding: 14px 16px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.op-stop-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) 84px auto;
+  gap: 8px;
+  align-items: end;
+}
+.op-stop-row .op-input { margin-top: 4px; padding: 8px 10px; font-size: 13px; }
+
+.op-scatter { display: block; width: 100%; height: auto; }
+
+/* ── App shell: sidebar brand, nav and demo strip ───────────────────────── */
+
+/* Brand mark drawn like a highway sign: green tile with a white inner rule. */
+.gg-sign-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: var(--gg-sign);
+  box-shadow: inset 0 0 0 2px var(--gg-sign), inset 0 0 0 3.5px #fff;
+  color: #fff;
+  font: 700 18px/1 var(--gg-font-display);
+}
+
+.gg-wordmark {
+  font: 700 24px/1 var(--gg-font-display);
+  letter-spacing: 0.01em;
+}
+
+.gg-nav-group {
+  padding: 14px 12px 6px;
+  font: 500 10.5px var(--gg-font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.4);
+}
+
+.gg-nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: rgb(255 255 255 / 0.72);
+  transition: background-color 0.15s, color 0.15s;
+}
+.gg-nav-link:hover { background: rgb(255 255 255 / 0.06); color: #fff; }
+.gg-nav-link.active { background: rgb(255 255 255 / 0.09); color: #fff; font-weight: 600; }
+.gg-nav-link.active::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--gg-amber);
+}
+.gg-nav-link:focus-visible { outline: 2px solid var(--gg-amber); outline-offset: 1px; }
+
+/* Driver top bar links: underline in sign green for the active page. */
+.gg-top-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 20px 4px 18px;
+  font-size: 14px;
+  color: var(--gg-muted);
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.gg-top-link:hover { color: var(--gg-ink); }
+.gg-top-link.active { color: var(--gg-ink); font-weight: 600; border-bottom-color: var(--gg-sign); }
+
+/* Quiet demo notice: a slim line, not a warning box. */
+.gg-demo-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 1320px;
+  margin: 0 auto 22px;
+  font: 400 11.5px/1.5 var(--gg-font-mono);
+  color: var(--gg-muted);
+}
+.gg-demo-strip i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gg-amber);
+  flex-shrink: 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+  .op-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .op-metric:nth-child(3) { border-left: 0; }
+  .op-metric:nth-child(n + 3) { border-top: 1px solid var(--gg-line); }
+  .op-columns { grid-template-columns: minmax(0, 1fr); }
+  .op-trip-detail { display: none; }
+}
+
+@media (max-width: 760px) {
+  .op-header { flex-direction: column; align-items: flex-start; }
+  .op-planner,
+  .op-fleet-grid,
+  .op-plan-grid { grid-template-columns: minmax(0, 1fr); }
+  .op-map { height: 380px; }
+  .op-panel { padding: 18px; }
+  .op-metric { padding: 16px; }
+  .op-trip-row { flex-wrap: wrap; gap: 10px; }
+  .op-trip-main { flex-basis: 65%; }
+  .op-footer { flex-direction: column; }
+  .op-stop-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .op-page *,
+  .gg-vehicle { animation: none !important; transition: none !important; }
+}
+
+/* A metrics strip nested in a panel drops its own shadow. */
+.op-panel .op-metrics { box-shadow: none; border: 1px solid var(--gg-line); }
+
+/* Segmented filter (driver approvals). */
+.op-segment { align-self: flex-start; display: inline-flex; padding: 3px; gap: 2px; border-radius: var(--gg-radius-md); background: var(--gg-surface); box-shadow: var(--gg-shadow-sm); }
+.op-segment button { padding: 7px 14px; border-radius: 7px; font-size: 13.5px; color: var(--gg-muted); text-transform: capitalize; }
+.op-segment button:hover { color: var(--gg-ink); }
+.op-segment button.active { background: var(--gg-sign); color: #fff; font-weight: 600; }
+
+.op-success { font-size: 13.5px; color: var(--gg-sign); font-weight: 500; }
+
+/* Panel whose content (a table, a modal) brings its own padding. */
+.op-panel.flush { padding: 0; }
+
+/* ── Driver rounds: the working screen ──────────────────────────────────── */
+
+.op-route-values.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+.gg-progress {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--gg-sign-tint);
+  overflow: hidden;
+}
+.gg-progress-bar {
+  height: 100%;
+  background: var(--gg-sign);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.gg-round-figures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0 18px;
+}
+.gg-round-figures b {
+  display: block;
+  font: 600 24px/1.15 var(--gg-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.gg-round-figures b small { font-size: 13px; color: var(--gg-faint); font-weight: 500; }
+.gg-round-figures span { font-size: 12px; color: var(--gg-muted); }
+
+.gg-round-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: 20px;
+  align-items: start;
+}
+.gg-round-map { height: 460px; }
+
+/* Next stop: the one card the driver looks at, so it gets the tint and the big button. */
+.gg-next-stop {
+  background: var(--gg-sign-tint);
+  border-radius: var(--gg-radius-lg);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.gg-next-stop h3 {
+  font: 700 26px/1.1 var(--gg-font-display);
+  color: var(--gg-sign-deep);
+}
+.gg-next-stop p { font-size: 13.5px; color: var(--gg-muted); }
+.gg-next-actions {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+.gg-big-button { min-height: 52px; font-size: 15px; }
+
+.gg-stop-list { display: flex; flex-direction: column; list-style: none; padding: 0; margin: 0; }
+.gg-stop-list li {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gg-line);
+}
+.gg-stop-list li:last-child { border-bottom: 0; }
+.gg-stop-list strong { font-size: 14px; font-weight: 600; }
+.gg-stop-list p { font-size: 12px; color: var(--gg-faint); }
+.gg-stop-number {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--gg-paper);
+  color: var(--gg-muted);
+  font: 600 12px/1 var(--gg-font-mono);
+}
+.gg-stop-list li.next .gg-stop-number { background: var(--gg-amber); color: var(--gg-sign-deep); }
+.gg-stop-list li.done .gg-stop-number { background: var(--gg-sign); color: #fff; }
+.gg-stop-list li.done strong { color: var(--gg-muted); text-decoration: line-through; text-decoration-color: var(--gg-line-strong); }
+
+.leaflet-marker-icon.op-pin.done { background: var(--gg-line-strong); }
+.leaflet-marker-icon.op-pin.next { background: var(--gg-amber); color: var(--gg-sign-deep); box-shadow: 0 0 0 4px rgb(224 163 46 / 0.35); }
+
+.gg-finish { border-top: 1px solid var(--gg-line); padding-top: 14px; }
+
+.gg-today-empty {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.gg-plate {
+  display: inline-block;
+  font: 600 22px/1 var(--gg-font-mono);
+  letter-spacing: 0.04em;
+  padding: 8px 12px;
+  border: 2px solid var(--gg-ink);
+  border-radius: var(--gg-radius-sm);
+  margin-bottom: 14px;
+}
+
+.gg-facts { display: grid; gap: 0; margin: 0; }
+.gg-facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--gg-line);
+  font-size: 13.5px;
+}
+.gg-facts dt { color: var(--gg-muted); }
+.gg-facts dd { margin: 0; font-weight: 500; text-align: right; overflow-wrap: anywhere; }
+.gg-facts dd.cap { text-transform: capitalize; }
+
+.gg-learned {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: var(--gg-radius-md);
+  background: var(--gg-sign-tint);
+}
+.gg-learned strong { font-size: 14px; color: var(--gg-sign-deep); }
+.gg-learned p { font-size: 12px; color: var(--gg-muted); margin-top: 2px; }
+
+.gg-notifications { list-style: none; margin: 0; padding: 0; }
+.gg-notifications li { border-bottom: 1px solid var(--gg-line); }
+.gg-notifications li:last-child { border-bottom: 0; }
+.gg-notifications button {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  text-align: left;
+  padding: 14px 4px;
+  color: var(--gg-muted);
+}
+.gg-notifications button.unread { color: var(--gg-ink); }
+.gg-notifications button.unread strong::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 8px;
+  border-radius: 50%;
+  background: var(--gg-amber);
+  vertical-align: 1px;
+}
+.gg-notification-text { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; font-size: 13.5px; }
+.gg-notification-text strong { font-size: 14px; font-weight: 600; }
+.gg-notification-time { font-size: 11.5px; color: var(--gg-faint); white-space: nowrap; }
+
+.gg-badge {
+  display: inline-flex;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: var(--gg-amber);
+  color: var(--gg-sign-deep);
+  font: 700 10.5px/1 var(--gg-font-mono);
+}
+nav[aria-label="Driver"] .relative .gg-badge { position: absolute; top: -6px; right: -10px; }
+
+.gg-dispatch {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gg-line);
+}
+.gg-dispatch strong { font-size: 14px; font-weight: 600; }
+.op-error-text { font-size: 13.5px; color: var(--gg-risk); font-weight: 500; }
+
+@media (max-width: 900px) {
+  .gg-round-body { grid-template-columns: minmax(0, 1fr); }
+  .gg-round-map { height: 320px; }
+}
+@media (max-width: 560px) {
+  .gg-round-figures { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .gg-round-figures div:last-child { grid-column: span 2; }
+  .op-route-values.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gg-next-actions { grid-template-columns: minmax(0, 1fr); }
+}
+.op-panel h2 + .gg-plate { margin-top: 12px; }
+
+/* Live fleet: sandbox overlay */
+.gg-sim-bar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 14px 18px; }
+.gg-sim-tag {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: var(--gg-radius-sm);
+  background: var(--gg-amber-tint);
+  color: #7a5310;
+  font: 600 11px/1.4 var(--gg-font-mono);
+  letter-spacing: 0.06em;
+}
+.gg-sim-kpis { font-size: 12.5px; color: var(--gg-muted); }
+.gg-sim-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+.gg-sim-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: 0; }
