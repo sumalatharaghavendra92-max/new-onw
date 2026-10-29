@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import FleetPlayback from '../../components/FleetPlayback';
 import MapView from '../../components/MapView';
 import { usePolling, PageHeader, ErrorNotice, Loading, Empty, RefreshButton, formatDate, amount } from '../../components/Operations';
 import { roundMapLayers, lastPosition, RoundProgress, StopList } from '../../components/RoundViews';
@@ -105,6 +106,8 @@ export default function LiveFleetMap() {
         description="Rounds and trips on the road right now, from each driver's phone GPS. Updates every 15 seconds."
         action={<RefreshButton onClick={reload} />}
       />
+      <FleetPlayback />
+      <h2>Actual driver GPS</h2>
       <ErrorNotice>{error}</ErrorNotice>
 
 

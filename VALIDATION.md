@@ -14,3 +14,12 @@ Warnings from existing dependencies include Requests' optional chardet compatibi
 Not verified: delivery into your real inbox (you must configure your own provider), SMS (not implemented), GPS on your phone, externally hosted HTTPS access, or availability/accuracy of public route/weather services. Public API boundaries are mocked in automated workflow tests. The project contains no real fleet source and no invented live vehicle readings.
 
 The included fleet-updated.png is a screenshot of isolated browser-test data, not evidence of a deployed fleet.
+
+
+## Delivery animation validation
+
+- Frontend build passed; lint passed with existing warnings.
+- `node tests/sampleFleetMotion.test.mjs` from frontend executed **4 tests, all passed**: inventory isolation, movement of all 25 vehicles, value bounds, unload/return/reload cycles and deterministic pause state.
+- Chromium verified 25 map markers move, pause freezes markers and table values, 10× resumes playback, and selecting a plate draws its loop. No non-GET fleet API requests or JavaScript page errors were observed.
+- No backend code, database schema, credentials or dependencies changed. Existing 121 backend results above apply to the unchanged backend.
+- The screenshot fleet-simulation.png shows synthetic test data only.

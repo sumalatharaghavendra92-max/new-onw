@@ -47,6 +47,7 @@ export default function MapView({
   destination,
   currentLocation = null, // [lat, lng] last GPS position
   autoCenterOnGps = false,
+  fitOnUpdate = true,
   markers = NONE, // [{ lat, lng, label, title, className }] numbered pins (round planner)
   lines = NONE, // [{ points, color }] extra polylines drawn in order
   onMapClick = null, // (lat, lng) => void
@@ -55,6 +56,7 @@ export default function MapView({
   const mapRef = useRef(null);
   const leafletMapRef = useRef(null);
   const layersGroupRef = useRef(null);
+  const fittedRef = useRef(false);
 
   // Create the map once.
   useEffect(() => {
@@ -71,6 +73,7 @@ export default function MapView({
       if (leafletMapRef.current) {
         leafletMapRef.current.remove();
         leafletMapRef.current = null;
+        fittedRef.current = false;
       }
     };
   }, []);
@@ -156,11 +159,12 @@ export default function MapView({
       if (autoCenterOnGps) map.panTo(currentLocation, { animate: true });
     }
 
-    if (bounds.isValid() && !autoCenterOnGps) {
+    if (bounds.isValid() && !autoCenterOnGps && (fitOnUpdate || !fittedRef.current)) {
       map.fitBounds(bounds, { padding: [50, 50] });
+      fittedRef.current = true;
     }
     map.invalidateSize();
-  }, [routes, selectedRouteId, origin, destination, currentLocation, autoCenterOnGps, markers, lines, dots]);
+  }, [routes, selectedRouteId, origin, destination, currentLocation, autoCenterOnGps, fitOnUpdate, markers, lines, dots]);
 
   return (
     <div className="relative w-full h-full overflow-hidden">

@@ -71,6 +71,7 @@ export default function AdminDashboard() {
         description="Your whole fleet at a glance. Updates every 15 seconds."
         action={<RefreshButton onClick={reload} />}
       />
+      <Link className="pub-btn pub-btn-primary" to="/admin/fleet-map">Run 25-vehicle simulation →</Link>
       <ErrorNotice>{error && `${error} Displayed data may be out of date.`}</ErrorNotice>
 
       {loading ? <Loading /> : data && (

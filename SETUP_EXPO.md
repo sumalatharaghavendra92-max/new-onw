@@ -162,3 +162,20 @@ Tomorrow, reactivate `.venv`, go to `backend`, run `python run.py`; in another t
 Run from backend with the environment active: `python -m pytest -q`. Email tests mock the delivery boundary; they do not prove inbox delivery. From frontend: `npm run build` and `npm run lint`. See VALIDATION.md for the checks executed on this delivered version.
 
 Before relying on this commercially, add deployment TLS/reverse proxy, production WSGI hosting, shared persistent rate limiting (current default is per-process memory), operational monitoring, verified fleet/sensor integrations, account recovery and full device/browser tests. Do not describe this exhibition build as production certified. The email provider and phone location permissions must be tested using your own accounts/devices before the expo.
+
+
+## Show all 25 vehicles in action at the expo
+
+Open **Admin → Live fleet**, then click **Run 25-vehicle simulation**. A shortcut is also on the admin overview. The same SAMPLE-001 through SAMPLE-025 inventory vehicles appear as animated markers with changing delivery status, speed, fuel/battery percentage, cargo load, odometer and drop counts. Use **Pause/Resume**, select **5× or 10×** playback, or click a plate to see its illustrative loop. Restart begins a new playback; leaving the page stops it. The animation works without a routing API; the background map tiles still need internet.
+
+This is explicitly **SIMULATION**, not live GPS. The loops are schematic straight-line paths, not navigable road routes; values are synthetic presentation data. Sample maintenance vehicles participate as fictional actors. It writes no trips, GPS, inventory readings, fuel reports, savings or accounts. Actual driver GPS appears separately below the simulation; real reports remain unchanged.
+
+### Updating an already installed copy without losing your account
+
+1. Download the latest repository ZIP and extract it into a separate folder.
+2. Stop the **frontend** terminal with Ctrl+C. Keep the backend running.
+3. Copy the new `frontend/src` folder into your existing project's `frontend` folder. Choose **Replace files** when asked. Do not replace `backend`, `.env`, `.venv` or the database.
+4. In your existing frontend terminal run `npm.cmd run dev` again.
+5. Refresh the browser with Ctrl+F5, sign in if necessary, and open Admin → Live fleet.
+
+No dependency or database changes are needed for this animation update. If you cloned using Git rather than downloading a ZIP, `git pull` updates the files while ignored local credentials/databases remain in place.
